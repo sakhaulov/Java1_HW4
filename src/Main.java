@@ -25,8 +25,8 @@ public class Main {
     public static String enemy_name = "Враг";
 
     //Map
-    public static int map_height = 25;
-    public static int map_width = 25;
+    public static int map_height = 15;
+    public static int map_width = 15;
     public static String[][] map = new String[map_height][map_width];
     public static String map_empty = ".";
     public static String map_explored = "X";
@@ -66,6 +66,7 @@ public class Main {
         }
     }
 
+
     public static void init(int difficulty) {
         //Spawn empty map
         map = spawnMap(map_height, map_width);
@@ -79,6 +80,7 @@ public class Main {
 
     }
 
+
     public static int setDifficulty() {
         //scanner.nextInt();
         //Case
@@ -88,10 +90,12 @@ public class Main {
         return 0;
     }
 
+
     public static boolean checkWin() {
         int explored_count = countExplored();
         return map_height * map_width - wall_count_max - explored_count - 1 == 0;
     }
+
 
     public static int countExplored() {
         int count = 0;
@@ -142,6 +146,7 @@ public class Main {
         printBorder();
     }
 
+
     public static void printBorder() {
         for (int i = 0; i < map_width+1; i++) {
             System.out.print("____");
@@ -163,7 +168,6 @@ public class Main {
 
 
     public static void setPlayerPosition() {
-        int[] position = new int[2];
 
         for (int i = 0; i < map.length; i++) {
             for (int j = 0; j < map[i].length; j++) {
@@ -288,6 +292,7 @@ public class Main {
         return rand.nextInt(3);
     }
 
+
     public static void displayAction(int action, String name) {
         switch (action) {
             case 0:
@@ -302,15 +307,18 @@ public class Main {
         }
     }
 
+
     public static void playerTakeDamage() {
         System.out.println("Вы получили "+enemy_attack+" урона");
         player_hp -= enemy_attack;
     }
 
+
     public static void enemyTakeDamage() {
         System.out.println("Враг получил "+player_attack+" урона");
         enemy_hp -= player_attack;
     }
+
 
     public static void moveSuccess(int x, int y) {
         setSymbol(player_x, player_y, map_explored);
