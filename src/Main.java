@@ -116,11 +116,11 @@ public class Main {
             displayMap();
             movePlayer();
             if (player_hp <= 0) {
-                printBorder();
+                System.out.println("*************************************");
                 System.out.println("Вы погибли!\nУдачи в следующий раз");
                 break;
             } else if (checkWin()) {
-                printBorder();
+                System.out.println("*************************************");
                 displayMap();
                 System.out.println("Вы победили!\nПоздравляем!");
                 System.out.println(
@@ -174,7 +174,7 @@ public class Main {
 
                 if ( j == 0) System.out.print("#\t");
 
-                //Закоментировать цикл, чтобы враги отображались на карте
+                //Закомментировать цикл, чтобы враги отображались на карте
                 if (map[i][j] == enemy_symbol) {
                     System.out.print(map_empty + "\t");
                 } else {
@@ -184,7 +184,7 @@ public class Main {
                 if (j == map[i].length-1) System.out.print("#");
 
 
-                //Раскоментировать, чтобы враги отображались на карте
+                //Раскомментировать, чтобы враги отображались на карте
                 //System.out.print(map[i][j] + "\t");
             }
             System.out.println();
@@ -290,13 +290,13 @@ public class Main {
 
 
     public static void fight(int x, int y) {
-        System.out.println("***********************************");
+        System.out.println("*************************************");
         System.out.println(
                 "На вас напал враг!\n" +
                         "Начинается бой"
         );
         while (true) {
-            System.out.println("***********************************");
+            System.out.println("*************************************");
             System.out.print("Ваше здоровье: " + player_hp + "HP    ");
             System.out.print("Здоровье врага: " + enemy_hp + "HP \n");
             System.out.println(
@@ -319,7 +319,7 @@ public class Main {
 
             if (enemy_hp <= 0) {
                 enemy_hp = 50;
-                System.out.println("***********************************");
+                System.out.println("*************************************");
                 System.out.println("Враг повержен!");
                 moveSuccess(x, y);
                 break;
