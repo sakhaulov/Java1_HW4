@@ -1,5 +1,5 @@
-import javax.sound.midi.Soundbank;
 import java.util.Arrays;
+import java.util.InputMismatchException;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -19,14 +19,14 @@ public class Main {
 
     //Enemy
     public static int enemy_hp = 50;
-    public static int enemy_attack = 5;
+    public static int enemy_attack = 50;
     public static int enemy_count_max = 3;
     public static String enemy_symbol = "E";
     public static String enemy_name = "Враг";
 
     //Map
     public static int map_height = 5;
-    public static int map_width = 10;
+    public static int map_width = 5;
     public static String[][] map = new String[map_height][map_width];
     public static String map_empty = ".";
     public static String map_explored = "X";
@@ -47,13 +47,25 @@ public class Main {
         spawn(player_symbol, player_count_max);
         setPlayerPosition(map);
 
-        System.out.println("x - " + player_x + " y - " + player_y);
+        boolean win_condition = true;
 
         while (true) {
-            displayMap(map);
-            movePlayer();
+            try {
+                System.out.println("***********************************");
+                displayMap(map);
+                movePlayer();
+                if (player_hp <= 0) {
+                    System.out.println("Вы погибли!\nУдачи в следующий раз");
+                    break;
+                } else if (win_condition) {
+                    System.out.println("Вы победили!\nПоздравляем");
+                    break;
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("Неверное значение");
+                scanner.next();
+            }
         }
-
     }
 
 
@@ -72,12 +84,13 @@ public class Main {
 
         for (int i = 0; i < map.length; i++) {
             for (int j = 0; j < map[i].length; j++) {
-//                if (map[i][j] == enemy_symbol) {
-//                    System.out.print(map_empty + "\t");
-//                } else {
-//                    System.out.print(map[i][j] + "\t");
-//                }
-                System.out.print(map[i][j] + "\t");
+
+                if (map[i][j] == enemy_symbol) {
+                    System.out.print(map_empty + "\t");
+                } else {
+                    System.out.print(map[i][j] + "\t");
+                }
+                //System.out.print(map[i][j] + "\t");
             }
             System.out.println();
         }
@@ -90,7 +103,7 @@ public class Main {
         int y = rand.nextInt(map_width);
         position[0] = x;
         position[1] = y;
-        System.out.println(Arrays.toString(position));
+        //System.out.println(Arrays.toString(position));
         return position;
     }
 
@@ -103,7 +116,7 @@ public class Main {
                 if (map[i][j] == player_symbol) {
                     player_x = j;
                     player_y = i;
-                    System.out.println("x - " + player_x + " y - " + player_y);
+                    //System.out.println("x - " + player_x + " y - " + player_y);
                 }
             }
         }
@@ -112,7 +125,7 @@ public class Main {
 
     public static void setSymbol(int x, int y, String symbol) {
         map[y][x] = symbol;
-        System.out.println("X - " + x + " Y - " + y + " Symbol " + symbol);
+        //System.out.println("X - " + x + " Y - " + y + " Symbol " + symbol);
     }
 
 
@@ -169,6 +182,10 @@ public class Main {
 
 
     public static void fight(int x, int y) {
+        System.out.println("***********************************");
+        System.out.println(
+                "На вас напал враг!\nНачинается бой\n"
+        );
         while (true) {
             System.out.println("***********************************");
             System.out.print("Ваше здоровье: " + player_hp + "HP    ");
@@ -190,11 +207,13 @@ public class Main {
 
             if (enemy_hp <= 0) {
                 enemy_hp = 50;
+                System.out.println("***********************************");
                 System.out.println("Враг повержен!");
                 moveSuccess(x, y);
                 break;
             } else if (player_hp <= 0) {
-                System.out.println("Вы погибли!");
+                System.out.println("***********************************");
+                //System.out.println("Вы погибли!");
                 break;
             }
         }
@@ -261,6 +280,7 @@ public class Main {
         }
     }
 
+
     public static void processMovement(int x, int y) {
 
         if (isValidPosition(x, y)) {
@@ -271,15 +291,15 @@ public class Main {
                 player_y = y;
                 setSymbol(player_x, player_y, player_symbol);
             } else if (checkSymbol(x, y) == wall_symbol) {
-                System.out.println("Нельзя ходить через стены");
+                System.out.println("Нельзя ходить сквозь стены");
             } else if (checkSymbol(x, y) == enemy_symbol) {
-                System.out.println("Начинается бой");
                 fight(x, y);
             }
         } else {
             System.out.println("Выберите другое направление");
         }
     }
+
 
     public static boolean isValidPosition(int x, int y) {
         return (x < map_width && x >= 0 && y < map_height && y >=0);
