@@ -305,6 +305,7 @@ public class Main {
                             "Блокировать щитом - 1\n" +
                             "Атаковать магией - 2\n"
             );
+
             int player_action = scanner.nextInt();
             int enemy_action = enemyAction();
 
