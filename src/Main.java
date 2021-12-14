@@ -10,17 +10,19 @@ public class Main {
 
     //Player
     public static int player_hp = 100;
-    public static int player_attack = 20;
+    public static int player_attack = 25;
     public static int player_x = 0;
     public static int player_y = 0;
-    public static String player_symbol = "@";
     public static int player_count_max = 1;
+    public static String player_symbol = "@";
+    public static String player_name = "Игрок";
 
     //Enemy
-    public static int enemy_hp = 100;
-    public static int enemy_attack = 10;
-    public static String enemy_symbol = "E";
+    public static int enemy_hp = 50;
+    public static int enemy_attack = 5;
     public static int enemy_count_max = 3;
+    public static String enemy_symbol = "E";
+    public static String enemy_name = "Враг";
 
     //Map
     public static int map_height = 5;
@@ -134,7 +136,7 @@ public class Main {
     public static void movePlayer() {
 
         System.out.println(
-                "Выберите направление:\nВверх - 8\nВниз - 2\nВлево - 4\nВправо - 6\n"
+                "Выберите направление движения:\nВверх - 8\nВниз - 2\nВлево - 4\nВправо - 6\n"
         );
         int direction = scanner.nextInt();
         int temp;
@@ -164,8 +166,99 @@ public class Main {
         }
 
     }
-    public static void fight() {
-        System.out.println("Пыщь");
+
+
+    public static void fight(int x, int y) {
+        while (true) {
+            System.out.println("***********************************");
+            System.out.print("Ваше здоровье: " + player_hp + "HP    ");
+            System.out.print("Здоровье врага: " + enemy_hp + "HP \n");
+            System.out.println(
+                    "Выберите действие:\nУдарить мечом - 0\nБлокировать щитом - 1\nАтаковать магией - 2\n"
+            );
+            int player_action = scanner.nextInt();
+            int enemy_action = enemyAction();
+
+            if (player_action > 2) {
+                System.out.println("Неверное действие");
+                continue;
+            }
+
+            displayAction(player_action, player_name);
+            displayAction(enemy_action, enemy_name);
+            processFight(player_action, enemy_action);
+
+            if (enemy_hp <= 0) {
+                enemy_hp = 50;
+                System.out.println("Враг повержен!");
+                moveSuccess(x, y);
+                break;
+            } else if (player_hp <= 0) {
+                System.out.println("Вы погибли!");
+                break;
+            }
+        }
+        }
+
+
+    public static int enemyAction() {
+        return rand.nextInt(3);
+    }
+
+    public static void displayAction(int action, String name) {
+        switch (action) {
+            case 0:
+                System.out.println(name + " атакует мечом"); //ножницы
+                break;
+            case 1:
+                System.out.println(name + " поднимает щит"); //камень
+                break;
+            case 2:
+                System.out.println(name + " читает заклинание"); //бумага
+                break;
+        }
+    }
+
+    public static void playerTakeDamage() {
+        System.out.println("Вы получили "+enemy_attack+" урона");
+        player_hp -= enemy_attack;
+    }
+
+    public static void enemyTakeDamage() {
+        System.out.println("Враг получил "+player_attack+" урона");
+        enemy_hp -= player_attack;
+    }
+
+    public static void moveSuccess(int x, int y) {
+        setSymbol(player_x, player_y, map_explored);
+        player_x = x;
+        player_y = y;
+        setSymbol(player_x, player_y, player_symbol);
+    }
+
+
+    public static void processFight(int player_action, int enemy_action) {
+        if (player_action == enemy_action) {
+            System.out.println("Ничего не произошло!");
+        } else if (player_action == 0 && enemy_action == 1) {
+            System.out.println("Враг отразил вашу атаку и ударил вас в ответ");
+            playerTakeDamage();
+        } else if (player_action == 0 && enemy_action == 2) {
+            System.out.println("Вы успешно ударили врага");
+            enemyTakeDamage();
+        } else if (player_action == 1 && enemy_action == 0) {
+            System.out.println("Вы отразили атаку врага и ударили его в ответ");
+            enemyTakeDamage();
+        } else if (player_action == 1 && enemy_action == 2) {
+            System.out.println("Магия врага пробивает ваш щит");
+            playerTakeDamage();
+        } else if (player_action == 2 && enemy_action == 0) {
+            System.out.println("Враг ударил вас");
+            playerTakeDamage();
+        } else if (player_action == 2 && enemy_action == 1) {
+            System.out.println("Ваша магия пробила щит врага");
+            enemyTakeDamage();
+        }
     }
 
     public static void processMovement(int x, int y) {
@@ -181,7 +274,7 @@ public class Main {
                 System.out.println("Нельзя ходить через стены");
             } else if (checkSymbol(x, y) == enemy_symbol) {
                 System.out.println("Начинается бой");
-                fight();
+                fight(x, y);
             }
         } else {
             System.out.println("Выберите другое направление");
