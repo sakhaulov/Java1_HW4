@@ -38,36 +38,67 @@ public class Main {
     //Difficulty
     public static int difficulty = 0;
 
+
     public static void main(String[] args) {
-
-        //Pick game difficulty
-        difficulty = setDifficulty();
-        init(difficulty);
+        start();
+    }
 
 
-        while (true) {
-            try {
-                displayMap();
-                movePlayer();
-                if (player_hp <= 0) {
-                    System.out.println("***********************************");
-                    System.out.println("Вы погибли!\nУдачи в следующий раз");
-                    break;
-                } else if (checkWin()) {
-                    System.out.println("***********************************");
-                    displayMap();
-                    System.out.println("Вы победили!\nПоздравляем!");
-                    break;
-                }
-            } catch (InputMismatchException e) {
-                System.out.println("Неверное значение");
-                scanner.next();
-            }
+    public static void start() {
+        try {
+            setDifficulty();
+            init();
+            play();
+        } catch (InputMismatchException e) {
+            System.out.println("Введено неверное значение");
+            scanner.next();
         }
     }
 
 
-    public static void init(int difficulty) {
+    public static void setDifficulty() {
+        System.out.println(
+                "Выберите сложность:\n" +
+                        "1 - Лёгкая\n" +
+                        "Карта размером 5х5, 2 слабых врага\n" +
+                        "2 - Средняя\n" +
+                        "Карта размером 10х10, 3 обычных врага\n" +
+                        "3 - Высокая\n" +
+                        "Карта размером 10х10, 4 сильных врага\n"
+        );
+
+        difficulty = scanner.nextInt();
+
+        switch (difficulty) {
+            case 1:
+                map_height = 5;
+                map_width = 5;
+                enemy_count_max = 2;
+                enemy_attack = 5;
+                enemy_hp = 50;
+                wall_count_max = 0;
+                break;
+            case 2:
+                map_height = 10;
+                map_width = 10;
+                enemy_count_max = 3;
+                enemy_attack = 10;
+                enemy_hp = 75;
+                wall_count_max = 3;
+                break;
+            case 3:
+                map_height = 15;
+                map_width = 15;
+                enemy_count_max = 4;
+                enemy_attack = 15;
+                enemy_hp = 100;
+                wall_count_max = 5;
+                break;
+        }
+    }
+
+
+    public static void init() {
         //Spawn empty map
         map = spawnMap(map_height, map_width);
         //Spawn enemies
@@ -77,18 +108,33 @@ public class Main {
         //Spawn player
         spawn(player_symbol, player_count_max);
         setPlayerPosition();
-
     }
 
 
-    public static int setDifficulty() {
-        //scanner.nextInt();
-        //Case
-        //Enemy number
-        //Enemy attack
-        //Map number
-        return 0;
+    public static void play() {
+        while (true) {
+            displayMap();
+            movePlayer();
+            if (player_hp <= 0) {
+                printBorder();
+                System.out.println("Вы погибли!\nУдачи в следующий раз");
+                break;
+            } else if (checkWin()) {
+                printBorder();
+                displayMap();
+                System.out.println("Вы победили!\nПоздравляем!");
+                System.out.println(
+                        "Сыграть ещё раз?\n"+
+                        "1 - Да\n"+
+                        "0 - Нет"
+                );
+                int answer = scanner.nextInt();
+                if (answer == 1) start();
+                else if (answer == 0) break;
+            }
+        }
     }
+
 
 
     public static boolean checkWin() {
@@ -126,7 +172,7 @@ public class Main {
         for (int i = 0; i < map.length; i++) {
             for (int j = 0; j < map[i].length; j++) {
 
-                if ( j == 0) System.out.print("|\t");
+                if ( j == 0) System.out.print("#\t");
 
                 //Закоментировать цикл, чтобы враги отображались на карте
                 if (map[i][j] == enemy_symbol) {
@@ -135,7 +181,7 @@ public class Main {
                     System.out.print(map[i][j] + "\t");
                 }
 
-                if (j == map[i].length-1) System.out.print("|");
+                if (j == map[i].length-1) System.out.print("#");
 
 
                 //Раскоментировать, чтобы враги отображались на карте
@@ -149,9 +195,9 @@ public class Main {
 
     public static void printBorder() {
         for (int i = 0; i < map_width+1; i++) {
-            System.out.print("____");
+            System.out.print("#\t");
         }
-        System.out.print("_");
+        System.out.print("#");
         System.out.println();
     }
 
@@ -162,6 +208,7 @@ public class Main {
         int y = rand.nextInt(map_width);
         position[0] = x;
         position[1] = y;
+        //Debug
         //System.out.println(Arrays.toString(position));
         return position;
     }
@@ -237,11 +284,6 @@ public class Main {
                 temp = player_x + 1;
                 processMovement(temp, player_y);
                 break;
-
-            default:
-                System.out.println("Неверное значение");
-                break;
-
         }
 
     }
