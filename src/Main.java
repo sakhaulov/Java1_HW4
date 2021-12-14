@@ -25,14 +25,14 @@ public class Main {
     public static String enemy_name = "Враг";
 
     //Map
-    public static int map_height = 10;
-    public static int map_width = 10;
+    public static int map_height = 25;
+    public static int map_width = 25;
     public static String[][] map = new String[map_height][map_width];
     public static String map_empty = ".";
     public static String map_explored = "X";
 
     //Wall
-    public static String wall_symbol = "|";
+    public static String wall_symbol = "#";
     public static int wall_count_max = 10;
 
     //Difficulty
@@ -47,7 +47,6 @@ public class Main {
 
         while (true) {
             try {
-                System.out.println("***********************************");
                 displayMap();
                 movePlayer();
                 if (player_hp <= 0) {
@@ -118,9 +117,12 @@ public class Main {
 
 
     public static void displayMap() {
+        printBorder();
 
         for (int i = 0; i < map.length; i++) {
             for (int j = 0; j < map[i].length; j++) {
+
+                if ( j == 0) System.out.print("|\t");
 
                 //Закоментировать цикл, чтобы враги отображались на карте
                 if (map[i][j] == enemy_symbol) {
@@ -129,11 +131,23 @@ public class Main {
                     System.out.print(map[i][j] + "\t");
                 }
 
+                if (j == map[i].length-1) System.out.print("|");
+
+
                 //Раскоментировать, чтобы враги отображались на карте
                 //System.out.print(map[i][j] + "\t");
             }
             System.out.println();
         }
+        printBorder();
+    }
+
+    public static void printBorder() {
+        for (int i = 0; i < map_width+1; i++) {
+            System.out.print("____");
+        }
+        System.out.print("_");
+        System.out.println();
     }
 
 
@@ -193,7 +207,11 @@ public class Main {
     public static void movePlayer() {
 
         System.out.println(
-                "Выберите направление движения:\nВверх - 8\nВниз - 2\nВлево - 4\nВправо - 6\n"
+                "Выберите направление движения:\n" +
+                        "Вверх - 8\n" +
+                        "Вниз - 2\n" +
+                        "Влево - 4\n" +
+                        "Вправо - 6\n"
         );
         int direction = scanner.nextInt();
         int temp;
