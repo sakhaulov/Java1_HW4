@@ -55,10 +55,12 @@ public class Main {
                 displayMap(map);
                 movePlayer();
                 if (player_hp <= 0) {
+                    System.out.println("***********************************");
                     System.out.println("Вы погибли!\nУдачи в следующий раз");
                     break;
                 } else if (win_condition) {
-                    System.out.println("Вы победили!\nПоздравляем");
+                    System.out.println("***********************************");
+                    System.out.println("Вы победили!\nПоздравляем!");
                     break;
                 }
             } catch (InputMismatchException e) {
@@ -85,11 +87,14 @@ public class Main {
         for (int i = 0; i < map.length; i++) {
             for (int j = 0; j < map[i].length; j++) {
 
+                //Закоментировать цикл, чтобы враги отображались на карте
                 if (map[i][j] == enemy_symbol) {
                     System.out.print(map_empty + "\t");
                 } else {
                     System.out.print(map[i][j] + "\t");
                 }
+
+                //Раскоментировать, чтобы враги отображались на карте
                 //System.out.print(map[i][j] + "\t");
             }
             System.out.println();
@@ -212,8 +217,6 @@ public class Main {
                 moveSuccess(x, y);
                 break;
             } else if (player_hp <= 0) {
-                System.out.println("***********************************");
-                //System.out.println("Вы погибли!");
                 break;
             }
         }
