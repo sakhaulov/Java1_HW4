@@ -25,8 +25,8 @@ public class Main {
     public static String enemy_name = "Враг";
 
     //Map
-    public static int map_height = 5;
-    public static int map_width = 5;
+    public static int map_height = 10;
+    public static int map_width = 10;
     public static String[][] map = new String[map_height][map_width];
     public static String map_empty = ".";
     public static String map_explored = "X";
@@ -35,21 +35,15 @@ public class Main {
     public static String wall_symbol = "|";
     public static int wall_count_max = 5;
 
+    //Difficulty
+    public static int difficulty = 0;
+
     public static void main(String[] args) {
 
         //Pick game difficulty
-        setDifficulty();
-        //Spawn empty map
-        map = spawnMap(map_height, map_width);
-        //Spawn enemies
-        spawn(enemy_symbol, enemy_count_max);
-        //Spawn walls
-        spawn(wall_symbol, wall_count_max);
-        //Spawn player
-        spawn(player_symbol, player_count_max);
-        setPlayerPosition();
+        difficulty = setDifficulty();
+        init(difficulty);
 
-        boolean win_condition = true;
 
         while (true) {
             try {
@@ -60,8 +54,9 @@ public class Main {
                     System.out.println("***********************************");
                     System.out.println("Вы погибли!\nУдачи в следующий раз");
                     break;
-                } else if (!checkWin()) {
+                } else if (checkWin()) {
                     System.out.println("***********************************");
+                    displayMap();
                     System.out.println("Вы победили!\nПоздравляем!");
                     break;
                 }
@@ -72,16 +67,42 @@ public class Main {
         }
     }
 
-    public static void setDifficulty() {
+    public static void init(int difficulty) {
+        //Spawn empty map
+        map = spawnMap(map_height, map_width);
+        //Spawn enemies
+        spawn(enemy_symbol, enemy_count_max);
+        //Spawn walls
+        spawn(wall_symbol, wall_count_max);
+        //Spawn player
+        spawn(player_symbol, player_count_max);
+        setPlayerPosition();
+
+    }
+
+    public static int setDifficulty() {
         //scanner.nextInt();
         //Case
         //Enemy number
         //Enemy attack
         //Map number
+        return 0;
     }
 
     public static boolean checkWin() {
-        return true;
+        int explored_count = countExplored();
+        return map_height * map_width - wall_count_max - explored_count - 1 == 0;
+    }
+
+    public static int countExplored() {
+        int count = 0;
+
+        for (int i = 0; i < map.length; i++) {
+            for (int j = 0; j < map[i].length; j++) {
+                if (map[i][j] == map_explored) count++;
+            }
+        }
+        return count;
     }
 
 
