@@ -19,7 +19,7 @@ public class Main {
 
     //Enemy
     public static int enemy_hp = 50;
-    public static int enemy_attack = 50;
+    public static int enemy_attack = 5;
     public static int enemy_count_max = 3;
     public static String enemy_symbol = "E";
     public static String enemy_name = "Враг";
@@ -36,29 +36,31 @@ public class Main {
     public static int wall_count_max = 5;
 
     public static void main(String[] args) {
-        map = spawnMap(map_height, map_width);
 
-        getRandomPosition(map_height, map_width);
+        //Pick game difficulty
+        setDifficulty();
+        //Spawn empty map
+        map = spawnMap(map_height, map_width);
         //Spawn enemies
         spawn(enemy_symbol, enemy_count_max);
         //Spawn walls
         spawn(wall_symbol, wall_count_max);
         //Spawn player
         spawn(player_symbol, player_count_max);
-        setPlayerPosition(map);
+        setPlayerPosition();
 
         boolean win_condition = true;
 
         while (true) {
             try {
                 System.out.println("***********************************");
-                displayMap(map);
+                displayMap();
                 movePlayer();
                 if (player_hp <= 0) {
                     System.out.println("***********************************");
                     System.out.println("Вы погибли!\nУдачи в следующий раз");
                     break;
-                } else if (win_condition) {
+                } else if (!checkWin()) {
                     System.out.println("***********************************");
                     System.out.println("Вы победили!\nПоздравляем!");
                     break;
@@ -68,6 +70,18 @@ public class Main {
                 scanner.next();
             }
         }
+    }
+
+    public static void setDifficulty() {
+        //scanner.nextInt();
+        //Case
+        //Enemy number
+        //Enemy attack
+        //Map number
+    }
+
+    public static boolean checkWin() {
+        return true;
     }
 
 
@@ -82,7 +96,7 @@ public class Main {
     }
 
 
-    public static void displayMap(String[][] map) {
+    public static void displayMap() {
 
         for (int i = 0; i < map.length; i++) {
             for (int j = 0; j < map[i].length; j++) {
@@ -102,7 +116,7 @@ public class Main {
     }
 
 
-    public static int[] getRandomPosition(int map_height, int map_width) {
+    public static int[] getRandomPosition() {
         int[] position = new int[2];
         int x = rand.nextInt(map_height);
         int y = rand.nextInt(map_width);
@@ -113,7 +127,7 @@ public class Main {
     }
 
 
-    public static void setPlayerPosition(String[][] map) {
+    public static void setPlayerPosition() {
         int[] position = new int[2];
 
         for (int i = 0; i < map.length; i++) {
@@ -121,6 +135,8 @@ public class Main {
                 if (map[i][j] == player_symbol) {
                     player_x = j;
                     player_y = i;
+
+                    //Debug
                     //System.out.println("x - " + player_x + " y - " + player_y);
                 }
             }
@@ -130,6 +146,8 @@ public class Main {
 
     public static void setSymbol(int x, int y, String symbol) {
         map[y][x] = symbol;
+
+        //Debug
         //System.out.println("X - " + x + " Y - " + y + " Symbol " + symbol);
     }
 
@@ -142,7 +160,7 @@ public class Main {
     public static void spawn(String symbol, int count_max) {
         int count = 1;
         while (count <= count_max) {
-            int[] position = getRandomPosition(map_height, map_width);
+            int[] position = getRandomPosition();
             if (map[position[0]][position[1]] == map_empty) {
                 map[position[0]][position[1]] = symbol;
                 count++;
@@ -189,14 +207,18 @@ public class Main {
     public static void fight(int x, int y) {
         System.out.println("***********************************");
         System.out.println(
-                "На вас напал враг!\nНачинается бой\n"
+                "На вас напал враг!\n" +
+                        "Начинается бой"
         );
         while (true) {
             System.out.println("***********************************");
             System.out.print("Ваше здоровье: " + player_hp + "HP    ");
             System.out.print("Здоровье врага: " + enemy_hp + "HP \n");
             System.out.println(
-                    "Выберите действие:\nУдарить мечом - 0\nБлокировать щитом - 1\nАтаковать магией - 2\n"
+                    "Выберите действие:\n" +
+                            "Ударить мечом - 0\n" +
+                            "Блокировать щитом - 1\n" +
+                            "Атаковать магией - 2\n"
             );
             int player_action = scanner.nextInt();
             int enemy_action = enemyAction();
@@ -261,7 +283,7 @@ public class Main {
 
     public static void processFight(int player_action, int enemy_action) {
         if (player_action == enemy_action) {
-            System.out.println("Ничего не произошло!");
+            System.out.println("Ваши атаки нейтрализовали друг друга!");
         } else if (player_action == 0 && enemy_action == 1) {
             System.out.println("Враг отразил вашу атаку и ударил вас в ответ");
             playerTakeDamage();
