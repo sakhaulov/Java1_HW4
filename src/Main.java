@@ -33,7 +33,7 @@ public class Main {
 
     //Wall
     public static String wall_symbol = "|";
-    public static int wall_count_max = 5;
+    public static int wall_count_max = 10;
 
     //Difficulty
     public static int difficulty = 0;
