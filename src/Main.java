@@ -45,57 +45,64 @@ public class Main {
 
 
     public static void start() {
-        try {
-            setDifficulty();
-            init();
-            play();
-        } catch (InputMismatchException e) {
-            System.out.println("Введено неверное значение");
-            scanner.next();
-        }
+        setDifficulty();
+        init();
+        play();
     }
 
 
     public static void setDifficulty() {
-        System.out.println(
-                "Выберите сложность:\n" +
-                        "1 - Лёгкая\n" +
-                        "Карта размером 5х5, 2 слабых врага\n" +
-                        "2 - Средняя\n" +
-                        "Карта размером 10х10, 3 обычных врага\n" +
-                        "3 - Высокая\n" +
-                        "Карта размером 10х10, 4 сильных врага\n"
-        );
+        while (difficulty == 0) {
 
-        difficulty = scanner.nextInt();
+            try {
+                System.out.println(
+                        "Выберите сложность:\n" +
+                                "1 - Лёгкая\n" +
+                                "Карта размером 5х5, 2 слабых врага\n" +
+                                "2 - Средняя\n" +
+                                "Карта размером 10х10, 3 обычных врага\n" +
+                                "3 - Высокая\n" +
+                                "Карта размером 10х10, 4 сильных врага\n"
+                );
 
-        switch (difficulty) {
-            case 1:
-                map_height = 5;
-                map_width = 5;
-                enemy_count_max = 2;
-                enemy_attack = 5;
-                enemy_hp = 50;
-                wall_count_max = 0;
-                break;
-            case 2:
-                map_height = 10;
-                map_width = 10;
-                enemy_count_max = 3;
-                enemy_attack = 10;
-                enemy_hp = 75;
-                wall_count_max = 3;
-                break;
-            case 3:
-                map_height = 15;
-                map_width = 15;
-                enemy_count_max = 4;
-                enemy_attack = 15;
-                enemy_hp = 100;
-                wall_count_max = 5;
-                break;
+                difficulty = scanner.nextInt();
+
+                switch (difficulty) {
+                    case 1:
+                        map_height = 5;
+                        map_width = 5;
+                        enemy_count_max = 2;
+                        enemy_attack = 5;
+                        enemy_hp = 50;
+                        wall_count_max = 0;
+                        break;
+                    case 2:
+                        map_height = 10;
+                        map_width = 10;
+                        enemy_count_max = 3;
+                        enemy_attack = 10;
+                        enemy_hp = 75;
+                        wall_count_max = 3;
+                        break;
+                    case 3:
+                        map_height = 15;
+                        map_width = 15;
+                        enemy_count_max = 4;
+                        enemy_attack = 15;
+                        enemy_hp = 100;
+                        wall_count_max = 5;
+                        break;
+                    default:
+                        break;
+                }
+
+            } catch (InputMismatchException e) {
+                System.out.println("Введено неверное значение");
+                scanner.next();
+            }
         }
     }
+
 
 
     public static void init() {
@@ -113,24 +120,29 @@ public class Main {
 
     public static void play() {
         while (true) {
-            displayMap();
-            movePlayer();
-            if (player_hp <= 0) {
-                System.out.println("*************************************");
-                System.out.println("Вы погибли!\nУдачи в следующий раз");
-                break;
-            } else if (checkWin()) {
-                System.out.println("*************************************");
+            try {
                 displayMap();
-                System.out.println("Вы победили!\nПоздравляем!");
-                System.out.println(
-                        "Сыграть ещё раз?\n"+
-                        "1 - Да\n"+
-                        "0 - Нет"
-                );
-                int answer = scanner.nextInt();
-                if (answer == 1) start();
-                else if (answer == 0) break;
+                movePlayer();
+                if (player_hp <= 0) {
+                    System.out.println("*************************************");
+                    System.out.println("Вы погибли!\nУдачи в следующий раз");
+                    break;
+                } else if (checkWin()) {
+                    System.out.println("*************************************");
+                    displayMap();
+                    System.out.println("Вы победили!\nПоздравляем!");
+                    System.out.println(
+                            "Сыграть ещё раз?\n" +
+                                    "1 - Да\n" +
+                                    "0 - Нет"
+                    );
+                    int answer = scanner.nextInt();
+                    if (answer == 1) start();
+                    else if (answer == 0) break;
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("Введено неверное значение");
+                scanner.next();
             }
         }
     }
@@ -244,8 +256,8 @@ public class Main {
 
 
     public static void spawn(String symbol, int count_max) {
-        int count = 1;
-        while (count <= count_max) {
+        int count = 0;
+        while (count < count_max) {
             int[] position = getRandomPosition();
             if (map[position[0]][position[1]] == map_empty) {
                 map[position[0]][position[1]] = symbol;
@@ -295,40 +307,39 @@ public class Main {
                 "На вас напал враг!\n" +
                         "Начинается бой"
         );
+
         while (true) {
-            System.out.println("*************************************");
-            System.out.print("Ваше здоровье: " + player_hp + "HP    ");
-            System.out.print("Здоровье врага: " + enemy_hp + "HP \n");
-            System.out.println(
-                    "Выберите действие:\n" +
-                            "Ударить мечом - 0\n" +
-                            "Блокировать щитом - 1\n" +
-                            "Атаковать магией - 2\n"
-            );
-
-            int player_action = scanner.nextInt();
-            int enemy_action = enemyAction();
-
-            if (player_action > 2) {
-                System.out.println("Неверное действие");
-                continue;
-            }
-
-            displayAction(player_action, player_name);
-            displayAction(enemy_action, enemy_name);
-            processFight(player_action, enemy_action);
-
-            if (enemy_hp <= 0) {
-                enemy_hp = 50;
+            try {
                 System.out.println("*************************************");
-                System.out.println("Враг повержен!");
-                moveSuccess(x, y);
-                break;
-            } else if (player_hp <= 0) {
-                break;
+                System.out.print("Ваше здоровье: " + player_hp + "HP    ");
+                System.out.print("Здоровье врага: " + enemy_hp + "HP \n");
+                System.out.println(
+                        "Выберите действие:\n" +
+                                "Ударить мечом - 0\n" +
+                                "Блокировать щитом - 1\n" +
+                                "Атаковать магией - 2\n"
+                );
+
+                int player_action = scanner.nextInt();
+                int enemy_action = enemyAction();
+
+                processFight(player_action, enemy_action);
+
+                if (enemy_hp <= 0) {
+                    enemy_hp = 50;
+                    System.out.println("*************************************");
+                    System.out.println("Враг повержен!");
+                    moveSuccess(x, y);
+                    break;
+                } else if (player_hp <= 0) {
+                    break;
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("Неверное действие");
+                scanner.next();
             }
         }
-        }
+    }
 
 
     public static int enemyAction() {
@@ -372,6 +383,9 @@ public class Main {
 
 
     public static void processFight(int player_action, int enemy_action) {
+        displayAction(player_action, player_name);
+        displayAction(enemy_action, enemy_name);
+
         if (player_action == enemy_action) {
             System.out.println("Ваши атаки нейтрализовали друг друга!");
         } else if (player_action == 0 && enemy_action == 1) {
