@@ -1,7 +1,4 @@
-import java.util.Arrays;
-import java.util.InputMismatchException;
-import java.util.Random;
-import java.util.Scanner;
+import java.util.*;
 
 public class Main {
 
@@ -93,13 +90,16 @@ public class Main {
                         wall_count_max = 5;
                         break;
                     default:
-                        break;
+                        throw new InputMismatchException();
                 }
 
             } catch (InputMismatchException e) {
-                System.out.println("Введено неверное значение");
+                System.out.println("Введите число, соответствующее выбранному уровню сложности: 1, 2 или 3");
+                difficulty = 0;
                 scanner.next();
+                continue;
             }
+
         }
     }
 
@@ -120,32 +120,27 @@ public class Main {
 
     public static void play() {
         while (true) {
-            try {
+
                 displayMap();
                 movePlayer();
+
+                //Player dies
                 if (player_hp <= 0) {
                     System.out.println("*************************************");
                     System.out.println("Вы погибли!\nУдачи в следующий раз");
                     break;
-                } else if (checkWin()) {
-                    System.out.println("*************************************");
-                    displayMap();
-                    System.out.println("Вы победили!\nПоздравляем!");
-                    System.out.println(
-                            "Сыграть ещё раз?\n" +
-                                    "1 - Да\n" +
-                                    "0 - Нет"
-                    );
-                    int answer = scanner.nextInt();
-                    if (answer == 1) start();
-                    else if (answer == 0) break;
+
+                //Player wins
+                } else if (!checkWin()) {
+                    if (processWin()) {
+                        difficulty = 0;
+                        start();
+                    }
+                    else break;
                 }
-            } catch (InputMismatchException e) {
-                System.out.println("Введено неверное значение");
-                scanner.next();
             }
         }
-    }
+
 
 
 
@@ -154,6 +149,30 @@ public class Main {
         return map_height * map_width - wall_count_max - explored_count - 1 == 0;
     }
 
+    public static boolean processWin() {
+        while (true) {
+            try {
+
+                System.out.println("*************************************");
+                displayMap();
+                System.out.println("Вы победили!\nПоздравляем!");
+                System.out.println(
+                        "Сыграть ещё раз?\n" +
+                                "1 - Да\n" +
+                                "0 - Нет"
+                );
+                int answer = scanner.nextInt();
+                if (answer != 1 && answer != 0) {
+                    throw new InputMismatchException();
+                }
+                return answer == 1;
+
+            } catch (InputMismatchException e) {
+                System.out.println("Введите 1 или 0");
+                scanner.next();
+            }
+        }
+    }
 
     public static int countExplored() {
         int count = 0;
@@ -268,36 +287,38 @@ public class Main {
 
 
     public static void movePlayer() {
+        try {
+            System.out.println(
+                    "Выберите направление движения:\n" +
+                            "Вверх - 8\n" +
+                            "Вниз - 2\n" +
+                            "Влево - 4\n" +
+                            "Вправо - 6\n"
+            );
+            int direction = scanner.nextInt();
+            int temp;
 
-        System.out.println(
-                "Выберите направление движения:\n" +
-                        "Вверх - 8\n" +
-                        "Вниз - 2\n" +
-                        "Влево - 4\n" +
-                        "Вправо - 6\n"
-        );
-        int direction = scanner.nextInt();
-        int temp;
-
-        switch (direction) {
-            case 8:
-                temp = player_y - 1;
-                processMovement(player_x, temp);
-                break;
-            case 2:
-                temp = player_y + 1;
-                processMovement(player_x, temp);
-                break;
-            case 4:
-                temp = player_x - 1;
-                processMovement(temp, player_y);
-                break;
-            case 6:
-                temp = player_x + 1;
-                processMovement(temp, player_y);
-                break;
+            switch (direction) {
+                case 8:
+                    temp = player_y - 1;
+                    processMovement(player_x, temp);
+                    break;
+                case 2:
+                    temp = player_y + 1;
+                    processMovement(player_x, temp);
+                    break;
+                case 4:
+                    temp = player_x - 1;
+                    processMovement(temp, player_y);
+                    break;
+                case 6:
+                    temp = player_x + 1;
+                    processMovement(temp, player_y);
+                    break;
+            }
+        } catch (InputMismatchException e) {
+            System.out.println("Введите одно из следующих значений: 8, 2, 4, 6");
         }
-
     }
 
 
@@ -335,7 +356,7 @@ public class Main {
                     break;
                 }
             } catch (InputMismatchException e) {
-                System.out.println("Неверное действие");
+                System.out.println("Введите одно из следующих значений: 0, 1, 2");
                 scanner.next();
             }
         }
@@ -425,7 +446,10 @@ public class Main {
                 fight(x, y);
             }
         } else {
-            System.out.println("Выберите другое направление");
+            System.out.println(
+                    "Вы пытаетесь выйти за край карты\n"+
+                    "Выберите другое направление"
+            );
         }
     }
 
