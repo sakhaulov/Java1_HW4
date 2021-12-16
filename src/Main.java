@@ -132,6 +132,7 @@ public class Main {
                 //Player wins
                 } else if (checkWin()) {
                     if (processWin()) {
+                        player_hp = 100;
                         difficulty = 0;
                         start();
                     }
