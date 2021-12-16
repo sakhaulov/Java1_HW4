@@ -130,7 +130,7 @@ public class Main {
                     break;
 
                 //Player wins
-                } else if (!checkWin()) {
+                } else if (checkWin()) {
                     if (processWin()) {
                         difficulty = 0;
                         start();
