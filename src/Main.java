@@ -97,7 +97,6 @@ public class Main {
                 System.out.println("Введите число, соответствующее выбранному уровню сложности: 1, 2 или 3");
                 difficulty = 0;
                 scanner.next();
-                continue;
             }
 
         }
